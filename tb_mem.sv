@@ -113,7 +113,7 @@ module tb_mem;
             errors++;
         end
 
-        // Wait another clock cycle — now SRAM read output should reflect newly written data '3'
+        // we should Wait another clock cycle — now SRAM read output should reflect newly written data '3'
         @(negedge clk);
         if (Dout_sram !== 4'h3) begin
             $display("ERROR (SRAM): Post read-during-write output update failed. Expected 3, got %h", Dout_sram);
