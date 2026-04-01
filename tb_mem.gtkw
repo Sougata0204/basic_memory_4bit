@@ -1,0 +1,12 @@
+[dumpfile] "tb_mem.vcd"
+[savefile] "tb_mem.gtkw"
+[timestart] 0
+@28
+tb_mem.clk
+tb_mem.WRITE
+tb_mem.READ
+@22
+tb_mem.A[3:0]
+tb_mem.Din[3:0]
+tb_mem.Dout_async[3:0]
+tb_mem.Dout_sram[3:0]
