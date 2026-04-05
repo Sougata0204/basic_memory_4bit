@@ -39,8 +39,6 @@ module tb_mem;
     initial begin
         $dumpfile("tb_mem.vcd");
         $dumpvars(0, tb_mem);
-
-        // Init sigs
         A = 0;
         WRITE = 0;
         READ = 0;
@@ -49,24 +47,21 @@ module tb_mem;
         @(negedge clk);
         
         $display("--- Starting Memory Test ---");
-        
-        // 1. Write to all addresses
         $display("Test 1: Write all addresses");
         for (int i = 0; i < 16; i++) begin
             A = i;
-            Din = ~i[3:0]; // Data pattern = inverted address
+            Din = ~i[3:0]; 
             WRITE = 1;
             @(negedge clk);
         end
         WRITE = 0;
         @(negedge clk);
 
-        // 2. Read back and verify all addresses
         $display("Test 2: Read and verify all addresses");
         for (int i = 0; i < 16; i++) begin
             A = i;
             READ = 1;
-            @(negedge clk); // Give clock edge for SRAM output
+            @(negedge clk); 
             if (Dout_async !== ~i[3:0]) begin
                 $display("ERROR (Async): Addr %0d Expected %h Got %h", i, ~i[3:0], Dout_async);
                 errors++;
@@ -78,12 +73,10 @@ module tb_mem;
         end
         READ = 0;
         @(negedge clk);
-
-        // 3. Test output when READ is deactivated
         $display("Test 3: Output behavior when READ=0");
         A = 5;
         READ = 0;
-        @(negedge clk); // Give clock edge for SRAM output to clear
+        @(negedge clk); 
         if (Dout_async !== 4'b0) begin
             $display("ERROR (Async): Output not zero when READ=0. Got %h", Dout_async);
             errors++;
@@ -92,28 +85,22 @@ module tb_mem;
             $display("ERROR (SRAM): Output not zero when READ=0. Got %h", Dout_sram);
             errors++;
         end
-
-        // 4. Simultaneous Write and Read
         $display("Test 4: Simultaneous Read-During-Write");
-        // We know from Test 1 that mem[10] (4'hA) holds 4'h5 (~4'hA)
         A = 4'hA;
         Din = 4'h3;
         WRITE = 1;
         READ = 1;
-        @(negedge clk); // We just passed a posedge clock. SRAM wrote 3, SRAM read latched old data (5).
+        @(negedge clk);
         
-        // Asynchronous design should combinatorially show new data '3'
         if (Dout_async !== 4'h3) begin
             $display("ERROR (Async): Read-during-write failed. Expected 3, got %h", Dout_async);
             errors++;
         end
-        // Synchronous design captures the old data '5'
         if (Dout_sram !== 4'h5) begin
             $display("ERROR (SRAM): Read-during-write failed. Expected old data 5, got %h", Dout_sram);
             errors++;
         end
 
-        // we should Wait another clock cycle — now SRAM read output should reflect newly written data '3'
         @(negedge clk);
         if (Dout_sram !== 4'h3) begin
             $display("ERROR (SRAM): Post read-during-write output update failed. Expected 3, got %h", Dout_sram);
