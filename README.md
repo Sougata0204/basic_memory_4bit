@@ -46,4 +46,4 @@ The design environment is configured to support standard logic simulators (e.g.,
 
 
 
-Done by isuku02 :) checck my linkedin "https://www.linkedin.com/in/sougata-chandra-875716224/"
+Done by Sougata0204 :) checck my linkedin "https://www.linkedin.com/in/sougata-chandra-875716224/"
